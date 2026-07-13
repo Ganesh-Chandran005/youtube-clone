@@ -32,3 +32,4 @@ export const demoVideoUrl = '/video/dQw4w9WgXcQ';
 export const demoVideoTitle = 'YouTube Video Title Placeholder';
 export const demoChannelUrl = '/channel/UCmXmlB4-HJytD7wek0Uo97A';
 export const demoChannelTitle = 'YouTube Channel';
+export const demoProfilePicture = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde';
