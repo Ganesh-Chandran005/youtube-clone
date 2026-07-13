@@ -1,9 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Typography, Box } from '@mui/material';
+import { Typography } from '@mui/material';
 import { CheckCircle } from 'lucide-react';
 
-export default function VideoCard({ video: { id: { videoId }, snippet } }) {
+export default function VideoCard({ video }) {
+  // Extract videoId from nested object if present, otherwise fall back to raw id string
+  const videoId = typeof video?.id === 'object' ? video?.id?.videoId : video?.id;
+  const snippet = video?.snippet;
+
+  // Abort rendering if no valid routing key exists to prevent generating broken paths
+  if (!videoId) return null;
+
   return (
     <div 
       style={{ 
@@ -14,13 +21,12 @@ export default function VideoCard({ video: { id: { videoId }, snippet } }) {
         boxSizing: 'border-box'
       }}
     >
-      {/* Absolute Bounding Mask for 16:9 Clipping */}
-      <Link to={videoId ? `/video/${videoId}` : '#'} style={{ width: '100%', textDecoration: 'none' }}>
+      <Link to={`/video/${videoId}`} style={{ width: '100%', textDecoration: 'none' }}>
         <div 
           style={{ 
             width: '100%', 
             position: 'relative', 
-            paddingTop: '56.25%', /* Strict 16:9 Proportions */
+            paddingTop: '56.25%', 
             borderRadius: '12px',
             overflow: 'hidden',
             backgroundColor: '#1e1e1e'
@@ -35,16 +41,15 @@ export default function VideoCard({ video: { id: { videoId }, snippet } }) {
               left: '0',
               width: '100%',
               height: '100%',
-              objectFit: 'cover' /* Hard crop absolute limits */
+              objectFit: 'cover'
             }} 
           />
         </div>
       </Link>
 
-      {/* Grid Aligned Description Matrix */}
       <div style={{ padding: '12px 0 0 0', width: '100%', boxSizing: 'border-box' }}>
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-          <Link to={videoId ? `/video/${videoId}` : '#'} style={{ textDecoration: 'none' }}>
+          <Link to={`/video/${videoId}`} style={{ textDecoration: 'none' }}>
             <Typography 
               variant="subtitle1" 
               sx={{ 
@@ -60,7 +65,7 @@ export default function VideoCard({ video: { id: { videoId }, snippet } }) {
                 fontFamily: '"Roboto", "Arial", sans-serif'
               }}
             >
-              {snippet?.title || 'YouTube Video Title Example Details'}
+              {snippet?.title || 'YouTube Video Title Placeholder'}
             </Typography>
           </Link>
           

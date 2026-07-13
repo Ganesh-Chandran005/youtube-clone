@@ -9,8 +9,13 @@ export default function Feed() {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    // Map 'Home' category selection to standard trending data for a true YouTube home experience
-    const searchQuery = selectedCategory === 'Home' ? 'trending highlights' : selectedCategory;
+    let searchQuery = selectedCategory;
+    
+    // Replace isolated home queries with a mixed trending array for varied topics
+    if (selectedCategory === 'Home') {
+      const homePool = ['trending news', 'popular music hits', 'gaming walkthroughs', 'latest tech review', 'travel documentary'];
+      searchQuery = homePool[Math.floor(Math.random() * homePool.length)];
+    }
     
     fetchFromAPI(`search?part=snippet&q=${searchQuery}`)
       .then((data) => setVideos(data.items || []));
