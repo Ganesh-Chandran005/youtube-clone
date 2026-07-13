@@ -11,15 +11,18 @@ export default function Videos({ videos, direction }) {
     );
   }
   
+  const isColumn = direction === 'column';
+  
   return (
     <div 
       style={{ 
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-        gap: '20px',
+        // If column, make it a strict single row list. If row, use the 4-column responsive adaptive auto-fill grid
+        gridTemplateColumns: isColumn ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))',
+        gap: '16px',
         width: '100%',
         boxSizing: 'border-box',
-        padding: '0 8px'
+        padding: isColumn ? '0' : '0 8px'
       }}
     >
       {videos.map((item, idx) => (
