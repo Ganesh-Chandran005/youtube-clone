@@ -10,21 +10,27 @@ export default function Feed() {
 
   useEffect(() => {
     fetchFromAPI(`search?part=snippet&q=${selectedCategory}`)
-      .then((data) => setVideos(data.items));
+      .then((data) => setVideos(data.items || []));
   }, [selectedCategory]);
 
   return (
     <Stack sx={{ flexDirection: { sx: "column", md: "row" }, backgroundColor: '#0f0f0f' }}>
-      <Box sx={{ height: { sx: "auto", md: "92vh" }, borderRight: "1px solid #272727", px: { sx: 0, md: 2 }, width: { sx: '100%', md: '240px' } }}>
+      <Box 
+        sx={{ 
+          height: { sx: "auto", md: "calc(100vh - 56px)" }, 
+          px: { sx: 0, md: 2 }, 
+          width: { sx: '100%', md: '240px' },
+          boxSizing: 'border-box',
+          position: 'sticky',
+          top: '56px'
+        }}
+      >
         <Sidebar selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
-        <Typography variant="body2" sx={{ mt: 1.5, color: "#717171", display: { sx: 'none', md: 'block' }, px: 2, fontSize: '0.75rem' }}>
-          © 2026 YouTube Clone
+        <Typography variant="body2" sx={{ mt: 2, color: "#aaa", display: { sx: 'none', md: 'block' }, px: 2, fontSize: '11px', lineHeight: '16px' }}>
+          About Press Copyright<br />Contact us Creators<br />Advertise Developers<br /><br />© 2026 YouTube LLC
         </Typography>
       </Box>
-      <Box p={3} sx={{ overflowY: "auto", height: "90vh", flex: 1, backgroundColor: '#0f0f0f' }}>
-        <Typography variant="h5" fontWeight="700" mb={3} sx={{ color: "#f1f1f1", letterSpacing: '-0.02em' }}>
-          {selectedCategory} Videos
-        </Typography>
+      <Box p={3} sx={{ overflowY: "auto", height: "calc(100vh - 56px)", flex: 1, backgroundColor: '#0f0f0f', boxSizing: 'border-box' }}>
         <Videos videos={videos} />
       </Box>
     </Stack>
