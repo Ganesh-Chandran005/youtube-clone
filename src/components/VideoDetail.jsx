@@ -12,17 +12,27 @@ export default function VideoDetail() {
   const [relatedVideos, setRelatedVideos] = useState([]);
 
   useEffect(() => {
+    // Clear old state tracking parameters on route mutations
+    setVideoDetail(null);
+    setRelatedVideos([]);
+
     fetchFromAPI(`videos?part=snippet,statistics&id=${id}`)
-      .then((data) => setVideoDetail(data.items[0]));
+      .then((data) => {
+        if (data?.items && data.items.length > 0) {
+          setVideoDetail(data.items[0]);
+        }
+      });
 
     fetchFromAPI(`search?part=snippet&relatedToVideoId=${id}&type=video`)
-      .then((data) => setRelatedVideos(data.items || []));
+      .then((data) => {
+        setRelatedVideos(data?.items || []);
+      });
   }, [id]);
 
   if (!videoDetail?.snippet) {
     return (
       <div style={{ color: '#aaa', padding: '40px', textAlign: 'center', fontSize: '14px', fontFamily: 'sans-serif' }}>
-        Loading video streaming channels...
+        Loading video stream and recommendation panels...
       </div>
     );
   }
@@ -43,46 +53,47 @@ export default function VideoDetail() {
         gap: '24px'
       }}
     >
-      {/* Primary Video Container */}
+      {/* Primary Video Main Stage Frame */}
       <div style={{ flex: '1 1 640px', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         <div style={{ width: '100%', position: 'relative', paddingTop: '56.25%', backgroundColor: '#000', borderRadius: '12px', overflow: 'hidden' }}>
           <ReactPlayer 
             url={`https://www.youtube.com/watch?v=${id}`} 
             className="react-player" 
             controls 
+            playing
             width="100%"
             height="100%"
             style={{ position: 'absolute', top: 0, left: 0 }}
           />
         </div>
         
-        <Typography variant="h6" sx={{ color: '#fff', fontWeight: '600', mt: 2, fontSize: '1.2rem', lineHeight: '1.6rem' }}>
+        <Typography variant="h6" sx={{ color: '#fff', fontWeight: '600', mt: 2, fontSize: '1.2rem', lineHeight: '1.6rem', fontFamily: '"Roboto", sans-serif' }}>
           {title}
         </Typography>
 
         <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', paddingBottom: '12px', borderBottom: '1px solid #272727', gap: '12px' }}>
           <Link to={`/channel/${channelId}`} style={{ textDecoration: 'none' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Typography variant="subtitle1" sx={{ color: '#fff', fontWeight: '500', fontSize: '1rem' }}>
+              <Typography variant="subtitle1" sx={{ color: '#fff', fontWeight: '500', fontSize: '1rem', fontFamily: '"Roboto", sans-serif' }}>
                 {channelTitle}
               </Typography>
               <CheckCircle style={{ width: '14px', height: '14px', fill: '#aaa', color: '#0f0f0f' }} />
             </div>
           </Link>
-          <div style={{ display: 'flex', gap: '16px', color: '#aaa', fontSize: '0.9rem' }}>
-            <span>{parseInt(viewCount).toLocaleString()} views</span>
-            <span>{parseInt(likeCount).toLocaleString()} likes</span>
+          <div style={{ display: 'flex', gap: '16px', color: '#aaa', fontSize: '0.9rem', fontFamily: '"Roboto", sans-serif' }}>
+            <span>{viewCount ? parseInt(viewCount).toLocaleString() : '0'} views</span>
+            <span>{likeCount ? parseInt(likeCount).toLocaleString() : '0'} likes</span>
           </div>
         </div>
 
-        <div style={{ backgroundColor: '#272727', padding: '12px', borderRadius: '12px', marginTop: '16px', fontSize: '0.9rem', color: '#f1f1f1', lineHeight: '1.4rem' }}>
-          {description?.slice(0, 300)}...
+        <div style={{ backgroundColor: '#272727', padding: '16px', borderRadius: '12px', marginTop: '16px', fontSize: '0.9rem', color: '#f1f1f1', lineHeight: '1.4rem', fontFamily: '"Roboto", sans-serif', whiteSpace: 'pre-wrap' }}>
+          {description}
         </div>
       </div>
 
-      {/* Secondary Recommendations Container */}
+      {/* Clean Right Hand Sidebar Recommendation Stack */}
       <div style={{ flex: '0 0 360px', width: '100%', minWidth: '300px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
-        <Typography variant="h6" sx={{ color: '#fff', fontSize: '1rem', fontWeight: '600', mb: 2 }}>
+        <Typography variant="h6" sx={{ color: '#fff', fontSize: '1rem', fontWeight: '600', mb: 2, fontFamily: '"Roboto", sans-serif' }}>
           Up Next
         </Typography>
         <Videos videos={relatedVideos} direction="column" />
