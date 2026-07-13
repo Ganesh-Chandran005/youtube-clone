@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Box } from '@mui/material';
 import Navbar from './components/Navbar';
 import Feed from './components/Feed';
 import VideoDetail from './components/VideoDetail';
@@ -10,7 +9,7 @@ import SearchFeed from './components/SearchFeed';
 export default function App() {
   return (
     <BrowserRouter>
-      <Box sx={{ backgroundColor: '#0f0f0f', minHeight: '100vh', color: '#f1f1f1' }}>
+      <div style={{ backgroundColor: '#0f0f0f', minHeight: '100vh', color: '#f1f1f1', fontFamily: '"Roboto", "Arial", sans-serif', margin: 0, padding: 0, boxSizing: 'border-box' }}>
         <Navbar />
         <Routes>
           <Route path="/" exact element={<Feed />} />
@@ -18,7 +17,7 @@ export default function App() {
           <Route path="/channel/:id" element={<ChannelDetail />} />
           <Route path="/search/:searchTerm" element={<SearchFeed />} />
         </Routes>
-      </Box>
+      </div>
     </BrowserRouter>
   );
 }
