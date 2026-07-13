@@ -5,11 +5,14 @@ import Sidebar from './Sidebar';
 import Videos from './Videos';
 
 export default function Feed() {
-  const [selectedCategory, setSelectedCategory] = useState('New');
+  const [selectedCategory, setSelectedCategory] = useState('Home');
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    fetchFromAPI(`search?part=snippet&q=${selectedCategory}`)
+    // Map 'Home' category selection to standard trending data for a true YouTube home experience
+    const searchQuery = selectedCategory === 'Home' ? 'trending highlights' : selectedCategory;
+    
+    fetchFromAPI(`search?part=snippet&q=${searchQuery}`)
       .then((data) => setVideos(data.items || []));
   }, [selectedCategory]);
 
@@ -22,11 +25,12 @@ export default function Feed() {
           width: { sx: '100%', md: '240px' },
           boxSizing: 'border-box',
           position: 'sticky',
-          top: '56px'
+          top: '56px',
+          overflowY: 'auto'
         }}
       >
         <Sidebar selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
-        <Typography variant="body2" sx={{ mt: 2, color: "#aaa", display: { sx: 'none', md: 'block' }, px: 2, fontSize: '11px', lineHeight: '16px' }}>
+        <Typography variant="body2" sx={{ mt: 2, color: "#717171", display: { sx: 'none', md: 'block' }, px: 2, fontSize: '11px', lineHeight: '16px' }}>
           About Press Copyright<br />Contact us Creators<br />Advertise Developers<br /><br />© 2026 YouTube LLC
         </Typography>
       </Box>
