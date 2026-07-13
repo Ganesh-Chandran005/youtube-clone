@@ -12,21 +12,27 @@ export default function VideoDetail() {
   const [relatedVideos, setRelatedVideos] = useState([]);
 
   useEffect(() => {
-    // Clear old state tracking parameters on route mutations
-    setVideoDetail(null);
-    setRelatedVideos([]);
+    // Standardize video identifier key mapping
+    const videoParamId = typeof id === 'object' ? id?.videoId : id;
+    
+    if (!videoParamId) return;
 
-    fetchFromAPI(`videos?part=snippet,statistics&id=${id}`)
+    setVideoDetail(null);
+    setRelatedVideos(false);
+
+    fetchFromAPI(`videos?part=snippet,statistics&id=${videoParamId}`)
       .then((data) => {
-        if (data?.items && data.items.length > 0) {
+        if (data?.items?.length > 0) {
           setVideoDetail(data.items[0]);
         }
-      });
+      })
+      .catch((err) => console.error("Error loading stream items:", err));
 
-    fetchFromAPI(`search?part=snippet&relatedToVideoId=${id}&type=video`)
+    fetchFromAPI(`search?part=snippet&relatedToVideoId=${videoParamId}&type=video`)
       .then((data) => {
         setRelatedVideos(data?.items || []);
-      });
+      })
+      .catch((err) => console.error("Error loading related feeds:", err));
   }, [id]);
 
   if (!videoDetail?.snippet) {
@@ -38,6 +44,7 @@ export default function VideoDetail() {
   }
 
   const { snippet: { title, channelId, channelTitle, description }, statistics: { viewCount, likeCount } } = videoDetail;
+  const videoParamId = typeof id === 'object' ? id?.videoId : id;
 
   return (
     <div 
@@ -53,11 +60,10 @@ export default function VideoDetail() {
         gap: '24px'
       }}
     >
-      {/* Primary Video Main Stage Frame */}
       <div style={{ flex: '1 1 640px', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         <div style={{ width: '100%', position: 'relative', paddingTop: '56.25%', backgroundColor: '#000', borderRadius: '12px', overflow: 'hidden' }}>
           <ReactPlayer 
-            url={`https://www.youtube.com/watch?v=${id}`} 
+            url={`https://www.youtube.com/watch?v=${videoParamId}`} 
             className="react-player" 
             controls 
             playing
@@ -91,12 +97,15 @@ export default function VideoDetail() {
         </div>
       </div>
 
-      {/* Clean Right Hand Sidebar Recommendation Stack */}
       <div style={{ flex: '0 0 360px', width: '100%', minWidth: '300px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
         <Typography variant="h6" sx={{ color: '#fff', fontSize: '1rem', fontWeight: '600', mb: 2, fontFamily: '"Roboto", sans-serif' }}>
           Up Next
         </Typography>
-        <Videos videos={relatedVideos} direction="column" />
+        {relatedVideos ? (
+          <Videos videos={relatedVideos} direction="column" />
+        ) : (
+          <div style={{ color: '#717171', fontSize: '13px' }}>Loading recommendations...</div>
+        )}
       </div>
     </div>
   );
