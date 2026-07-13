@@ -1,56 +1,49 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Typography, Card, CardContent, CardMedia, Box } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import { CheckCircle } from 'lucide-react';
 
 export default function VideoCard({ video: { id: { videoId }, snippet } }) {
   return (
-    <Card 
-      sx={{ 
+    <div 
+      style={{ 
         width: '100%', 
-        boxShadow: 'none', 
-        borderRadius: 0, 
         background: 'transparent',
-        border: 'none',
         display: 'flex',
         flexDirection: 'column',
-        cursor: 'pointer'
+        boxSizing: 'border-box'
       }}
     >
-      {/* 16:9 Thumbnail Mask Frame */}
+      {/* Absolute Bounding Mask for 16:9 Clipping */}
       <Link to={videoId ? `/video/${videoId}` : '#'} style={{ width: '100%', textDecoration: 'none' }}>
-        <Box 
-          sx={{ 
+        <div 
+          style={{ 
             width: '100%', 
             position: 'relative', 
-            paddingTop: '56.25%', /* Pure 16:9 Aspect Ratio Boundary */
+            paddingTop: '56.25%', /* Strict 16:9 Proportions */
             borderRadius: '12px',
             overflow: 'hidden',
-            backgroundColor: '#272727',
-            transition: 'border-radius 0.15s ease-in-out',
-            '&:hover': {
-              borderRadius: '0px'
-            }
+            backgroundColor: '#1e1e1e'
           }}
         >
-          <CardMedia 
-            image={snippet?.thumbnails?.high?.url || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'} 
+          <img 
+            src={snippet?.thumbnails?.high?.url || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'} 
             alt={snippet?.title} 
-            sx={{ 
+            style={{ 
               position: 'absolute',
-              top: 0,
-              left: 0,
+              top: '0',
+              left: '0',
               width: '100%',
               height: '100%',
-              objectFit: 'cover'
+              objectFit: 'cover' /* Hard crop absolute limits */
             }} 
           />
-        </Box>
+        </div>
       </Link>
 
-      {/* Accurate Typography Metadata Layout */}
-      <CardContent sx={{ backgroundColor: 'transparent', p: '12px 0 0 0 !important', width: '100%' }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+      {/* Grid Aligned Description Matrix */}
+      <div style={{ padding: '12px 0 0 0', width: '100%', boxSizing: 'border-box' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
           <Link to={videoId ? `/video/${videoId}` : '#'} style={{ textDecoration: 'none' }}>
             <Typography 
               variant="subtitle1" 
@@ -89,8 +82,8 @@ export default function VideoCard({ video: { id: { videoId }, snippet } }) {
               <CheckCircle style={{ width: '12px', height: '12px', marginLeft: '4px', fill: '#aaa', color: '#0f0f0f' }} />
             </Typography>
           </Link>
-        </Box>
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+    </div>
   );
 }
